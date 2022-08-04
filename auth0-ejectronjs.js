@@ -1,4 +1,8 @@
-const {BrowserWindow, ipcMain, app} = require('electron');
+const {
+    BrowserWindow,
+    ipcMain,
+    app
+} = require('electron');
 const OS = require("os");
 const jwtDecode = require('jwt-decode');
 const axios = require('axios');
@@ -125,11 +129,6 @@ async function auth(settings) {
     }
 
     ipcMain.handle(settings.calls.profile, () => profile);
-    ipcMain.handle(settings.calls.privateData, async () => await axios.get('http://localhost:3000/private', {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    }).data);
     ipcMain.on(settings.calls.logout, () => {
         BrowserWindow.getAllWindows().forEach(window => window.close());
         const logoutWindow = new BrowserWindow({
