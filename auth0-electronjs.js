@@ -10,6 +10,7 @@ const keytar = require("keytar");
 
 let accessToken = null;
 let profile = null;
+let idToken = null;
 let refreshToken = null;
 let config = {};
 
@@ -26,7 +27,7 @@ async function refreshTokens() {
             data: {
                 grant_type: 'refresh_token',
                 client_id: config.auth0.clientId,
-                refresh_token: refreshToken,
+                refresh_token: refreshToken
             }
         };
 
@@ -34,6 +35,7 @@ async function refreshTokens() {
             const response = await axios(refreshOptions);
             accessToken = response.data.access_token;
             profile = jwtDecode(response.data.id_token);
+            idToken = response.data.id_token;
         } catch (error) {
             await logout();
             throw error;
@@ -47,26 +49,23 @@ async function loadTokens(callbackURL) {
     const urlParts = new URL(callbackURL);
     const query = urlParts.searchParams;
 
-    const exchangeOptions = {
-        'grant_type': 'authorization_code',
-        'client_id': config.auth0.clientId,
-        'code': query.get("code"),
-        'redirect_uri': config.auth0.redirectUri,
-    };
-
     const options = {
         method: 'POST',
         url: `https://${config.auth0.domain}/oauth/token`,
-        headers: {
-            'content-type': 'application/json'
-        },
-        data: JSON.stringify(exchangeOptions),
+        headers: {'content-type': 'application/x-www-form-urlencoded'},
+        data: new URLSearchParams({
+            grant_type: 'authorization_code',
+            client_id: config.auth0.clientId,
+            code: query.get("code"),
+            redirect_uri: config.auth0.redirectUri
+        }),
     };
 
     try {
         const response = await axios(options);
         accessToken = response.data.access_token;
         profile = jwtDecode(response.data.id_token);
+        idToken = response.data.id_token;
         refreshToken = response.data.refresh_token;
         if (refreshToken) {
             await keytar.setPassword(config.keytar.service, config.keytar.account, refreshToken);
@@ -82,11 +81,14 @@ async function logout() {
     accessToken = null;
     profile = null;
     refreshToken = null;
+    idToken = null;
 }
 
-async function auth(settings) {
+async function authorize(settings) {
+    settings.auth0.scopes = settings.auth0.scopes || ["openid","profile","offline_access"]
     settings.keytar.account = settings.keytar.account || OS.userInfo().username;
-    settings.auth0.authorizationUri = settings.auth0.authorizationUri || `https://${settings.auth0.domain}/authorize?scope=openid profile offline_access&response_type=code&client_id=${settings.auth0.clientId}&redirect_uri=${settings.auth0.redirectUri}`;
+    const auth0URL = `https://${settings.auth0.domain}/authorize?scope=${encodeURIComponent(settings.auth0.scopes.join(" "))}&response_type=code&client_id=${settings.auth0.clientId}&redirect_uri=${settings.auth0.redirectUri}${settings.auth0.audience ? `&audience=${settings.auth0.audience}` : ''}`;
+    settings.auth0.authorizationUri = settings.auth0.authorizationUri || auth0URL;
     settings.authorizationWindow = settings.authorizationWindow || {
         width: 470,
         height: 680,
@@ -101,11 +103,7 @@ async function auth(settings) {
     } catch (err) {
         const authWindow = new BrowserWindow(settings.authorizationWindow);
 
-        if (settings.auth0.authorizationUriIsFile) {
-            authWindow.loadFile(settings.auth0.authorizationUri);
-        } else {
-            authWindow.loadURL(settings.auth0.authorizationUri);
-        }
+        authWindow.loadURL(settings.auth0.authorizationUriIsFile ? `file://${__dirname}/${settings.auth0.authorizationUri}?auth_url=${encodeURIComponent(auth0URL)}` : settings.auth0.authorizationUri);
 
         if (settings.authorizationWindowFunction) {
             settings.authorizationWindowFunction(authWindow);
@@ -127,7 +125,7 @@ async function auth(settings) {
             authWindow.close();
         });
     }
-
+    ipcMain.handle(settings.calls.accessToken, () => accessToken);
     ipcMain.handle(settings.calls.profile, () => profile);
     ipcMain.on(settings.calls.logout, () => {
         BrowserWindow.getAllWindows().forEach(window => window.close());
@@ -146,4 +144,4 @@ async function auth(settings) {
     });
 }
 
-module.exports = auth;
+module.exports = {authorize};
