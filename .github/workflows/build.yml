@@ -7,14 +7,12 @@ jobs:
     name: 'Compile Typescript'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Install NodeJS v18
-        uses: actions/setup-node@v1
-        with:
-          node-version: 18
+      # - uses: actions/checkout@v1
+      # - name: Install NodeJS v18
+      #  uses: actions/setup-node@v1
+      #  with:
+      #    node-version: 18
       - run: 'cd ${{ github.workspace }}'
-      - run: 'ls'
-      - run: 'npm ci'
-      - run: 'ls'
-      - run: 'npx tsc'
-      - run: 'ls'
+      # - run: 'npm ci'
+      # - run: 'npx tsc'
+      - run: 'touch file.txt'
