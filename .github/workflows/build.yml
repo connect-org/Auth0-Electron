@@ -1,28 +1,22 @@
-name: 'Build'
-
+name: Build
 on: push
-
 jobs:
   tsc:
-    name: "Compile Typescript"
+    name: Compile Typescript
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: "Install NodeJS v18"
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          
-      - name: "Install Packages"
-      - run: "cd ${{ github.workspace }}"
-      - run: "npm ci"
-      
-      - name: "Compile Typescript"
-      - run: "npx tsc"
-      
-      - name: "Upload Artifacts"
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Compiled Javascript
-          path: "./**/*.js"
+    - uses: actions/checkout@v3
+    - name: Install NodeJS v18
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - run: cd ${{ github.workspace }}
+    - name: Install Packages
+      run: npm ci
+    - name: Compile Typescript
+      run: npx tsc
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Compiled Javascript
+        path: "./**/*.js"
