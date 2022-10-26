@@ -12,5 +12,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 18
+      - run: 'pwd'
+      - run: 'cd ${{ github.workspace }}'
       - run: 'npm ci'
       - run: 'npx tsc'
