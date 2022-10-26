@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "es2022",
+    "target": "es6",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "sourceMap": false,
+    "baseUrl": ".",
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+  },
+  "include": ["./**/*"]
+}
