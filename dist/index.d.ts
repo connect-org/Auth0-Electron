@@ -1,5 +1,5 @@
 export declare class AuthError extends Error {
-	constructor(message?: string);
+    constructor(message?: string);
 }
 export interface User {
     profile?: unknown;
@@ -19,12 +19,12 @@ export interface ClientOptions {
     window: Electron.BrowserWindowConstructorOptions;
 }
 export declare class Client {
-	private options;
-	private authenticated;
-	constructor(options: ClientOptions);
-	private refreshTokens;
-	private keytarLogout;
-	private loadTokens;
-	login(): Promise<User>;
-	logout(): Promise<void>;
+    private options;
+    private authenticated;
+    constructor(options: ClientOptions);
+    private refreshTokens;
+    private keytarLogout;
+    private loadTokens;
+    login(): Promise<User>;
+    logout(): Promise<void>;
 }
