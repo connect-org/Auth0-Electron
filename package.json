@@ -8,7 +8,7 @@
     "keytar": "^7.9.0",
     "node-fetch": "^3.2.10"
   },
-  "version": "1.0.0",
+  "version": "1.0.2",
   "name": "auth0-electron",
   "description": "Auth0 authentiation and authorization library for Elecrton",
   "main": "dist/index.js",
