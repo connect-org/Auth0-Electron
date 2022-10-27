@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "module": "es2022",
-    "target": "es6",
+    "module": "ESNext",
+    "target": "ESNext",
     "noImplicitAny": true,
     "noImplicitThis": true,
     "sourceMap": false,
     "baseUrl": ".",
     "outDir": "dist",
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "removeComments": true
   },
   "include": ["./lib/*"]
 }
