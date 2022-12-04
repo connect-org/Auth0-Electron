@@ -22,12 +22,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/connect-org/Auth0-Electron.git"
+    "url": "git+https://github.com/Elijah629/Auth0-Electron.git"
   },
   "author": "Elijah629",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/connect-org/Auth0-Electron/issues"
+    "url": "https://github.com/Elijah629/Auth0-Electron/issues"
   },
-  "homepage": "https://github.com/connect-org/Auth0-Electron#readme"
+  "homepage": "https://github.com/Elijah629/Auth0-Electron#readme"
 }
